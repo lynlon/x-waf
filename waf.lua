@@ -55,7 +55,7 @@ function _M.white_ip_check()
         local WHITE_IP = util.get_client_ip()
         if IP_WHITE_RULE ~= nil then
             for _, rule in pairs(IP_WHITE_RULE) do
-                if rule ~= "" and rulematch(WHITE_IP, rule, "jo") then
+                if rule ~= "" and rulematch(WHITE_IP, rule, "joa") then
                     _M.log_record('White_IP', ngx.var_request_uri, "_", "_")
                     return true
                 end
@@ -85,7 +85,7 @@ function _M.black_ip_check()
         local BLACK_IP = util.get_client_ip()
         if IP_BLACK_RULE ~= nil then
             for _, rule in pairs(IP_BLACK_RULE) do
-                if rule ~= "" and rulematch(BLACK_IP, rule, "jo") then
+                if rule ~= "" and rulematch(BLACK_IP, rule, "joa") then
                     util.log_record('BlackList_IP', ngx.var_request_uri, "_", "_")
                     if config.config_waf_enable == "on" then
                         ngx.exit(403)
@@ -104,7 +104,7 @@ function _M.white_url_check()
         local REQ_URI = ngx.var.request_uri
         if URL_WHITE_RULES ~= nil then
             for _,rule in pairs(URL_WHITE_RULES) do
-                if rule ~= "" and rulematch(REQ_URI, rule, "jo") then
+                if rule ~= "" and rulematch(REQ_URI, rule, "joa") then
                     return true
                 end
             end
@@ -144,7 +144,7 @@ function _M.cookie_attack_check()
         local USER_COOKIE = ngx.var.http_cookie
         if USER_COOKIE ~= nil then
             for _, rule in pairs(COOKIE_RULES) do
-                if rule ~="" and rulematch(USER_COOKIE, rule, "jo") then
+                if rule ~="" and rulematch(USER_COOKIE, rule, "joa") then
                     util.log_record('Deny_Cookie', ngx.var.request_uri, "-", rule)
                     if config.config_waf_enable == "on" then
                         util.waf_output()
@@ -163,7 +163,7 @@ function _M.url_attack_check()
         local URL_RULES = _M.get_rule('url.rule')
         local REQ_URI = ngx.var.request_uri
         for _,rule in pairs(URL_RULES) do
-            if rule ~="" and rulematch(REQ_URI,rule,"jo") then
+            if rule ~="" and rulematch(REQ_URI,rule,"joa") then
                 util.log_record('Deny_URL', REQ_URI, "-", rule)
                 if config.config_waf_enable == "on" then
                     util.waf_output()
@@ -190,7 +190,7 @@ function _M.url_args_attack_check()
                 else
                     ARGS_DATA = val
                 end
-                if ARGS_DATA and type(ARGS_DATA) ~= "boolean" and rule ~="" and rulematch(unescape(ARGS_DATA), rule, "jo") then
+                if ARGS_DATA and type(ARGS_DATA) ~= "boolean" and rule ~="" and rulematch(unescape(ARGS_DATA), rule, "joa") then
                     util.log_record('Deny_URL_Args', ngx.var.request_uri, "-", rule)
                     if config.config_waf_enable == "on" then
                         util.waf_output()
@@ -210,7 +210,7 @@ function _M.user_agent_attack_check()
         local USER_AGENT = ngx.var.http_user_agent
         if USER_AGENT ~= nil then
             for _, rule in pairs(USER_AGENT_RULES) do
-                if rule ~= "" and rulematch(USER_AGENT, rule, "jo") then
+                if rule ~= "" and rulematch(USER_AGENT, rule, "joa") then
                     util.log_record('Deny_USER_AGENT', ngx.var.request_uri, "-", rule)
                     if config.config_waf_enable == "on" then
                         util.waf_output()
@@ -237,7 +237,7 @@ function _M.post_attack_check()
                 else
                     post_data = v
                 end
-                if rule ~= "" and rulematch(post_data, rule, "jo") then
+                if rule ~= "" and rulematch(post_data, rule, "joa") then
                     util.log_record('Deny_USER_POST_DATA', post_data, "-", rule)
                     if config.config_waf_enable == "on" then
                         util.waf_output()
